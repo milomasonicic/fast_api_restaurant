@@ -46,3 +46,12 @@ def verify_password_sss(plain_password: str, hashed_password: str) -> bool:
 
 def get_all_users(db):
     return db.query(User).all()
+
+
+# def get user by id
+def get_user_by_id(db, user_id:int):
+    return db.query(User).filter(User.id == user_id).first()
+
+### user by roles
+def get_users_by_roles(db, role:str):
+    return db.query(User).filter(User.role == role).all()
