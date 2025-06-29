@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models.user import User
-from schemas.user import UserRegister
+from schemas.user import UserRegister, UserUpdate
 from utils.auth import hash_password, verify_password
 from database.database import db
 import re
@@ -55,3 +55,17 @@ def get_user_by_id(db, user_id:int):
 ### user by roles
 def get_users_by_roles(db, role:str):
     return db.query(User).filter(User.role == role).all()
+
+### user update
+# crud.py
+def update_user(db, user_id: int, user_update: UserUpdate):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None
+    for field, value in user_update.dict(exclude_unset=True).items():
+        setattr(user, field, value)
+    db.commit()
+    db.refresh(user)
+    return user
+
+

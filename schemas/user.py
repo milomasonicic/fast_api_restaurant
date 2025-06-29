@@ -53,3 +53,9 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     message: str
+
+# User Update
+class UserUpdate(BaseModel):
+    name: Optional[str]
+    email: Optional[EmailStr]
+    role: Optional[str]

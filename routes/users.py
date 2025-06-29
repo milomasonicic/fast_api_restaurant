@@ -1,11 +1,11 @@
 from database.database import db
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from models.user import User
 from typing import List
-from crud.user import get_all_users, get_user_by_id, get_users_by_roles
-from schemas.user import  UserResponse
+from crud.user import get_all_users, get_user_by_id, get_users_by_roles, update_user
+from schemas.user import  UserResponse, UserUpdate
 from database.database import get_db
 
 '''
@@ -40,6 +40,17 @@ def get_users_by_roles_route(
     if not users:
         raise HTTPException(status_code=404, detail="Users not found with given role")
     return users
+
+@router.put("/update_user/{user_id}", response_model=UserResponse)
+def update_user_route(
+    user_id: int,
+    user_update: UserUpdate,
+    db: Session = Depends(get_db)
+):
+    updated_user = update_user(db, user_id, user_update)
+    if not updated_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return updated_user
 
 
 
